@@ -38,6 +38,15 @@ func (s *Server) RunE() error {
 	s.logger.Bg().Info("Sandbox Start")
 	s.logger.Bg().Info("message", zap.String("message", options.Message))
 
+	span := s.tracer.StartSpan("say-hello")
+	span.SetTag("hello-to", options.Message)
 
+	span.LogFields(
+		spanLog.String("event", "hoge"),
+	)
+
+	span.LogKV("event", "println")
+
+	span.Finish()
 	return nil
 }
