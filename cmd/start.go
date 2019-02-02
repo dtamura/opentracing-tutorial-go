@@ -15,8 +15,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/dtamura/hello-cobra/services/sandbox"
 	"github.com/spf13/cobra"
 )
 
@@ -25,8 +24,9 @@ var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "start",
 	Long:  "start",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("start called")
+	RunE: func(cmd *cobra.Command, args []string) error {
+		err := sandbox.RunE()
+		return err
 	},
 }
 
