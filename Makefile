@@ -1,9 +1,9 @@
 NAME				:= hello-cobra
 VERSION			:= v0.0.1
 REVISION		:= $(shell git rev-parse --short HEAD)
-PACKAGE_PATH	:=github.com/dtamura/hello-cobra
-LDFLAGS			:= "-X ${PACKAGE_PATH}/cmd.Version=${VERSION} -X ${PACKAGE_PATH}/cmd.Revision=${REVISION}"
-OSARCH			:= "darwin/amd64 linux/amd64"
+PACKAGE_PATH	:= github.com/dtamura/${NAME}
+LDFLAGS			:= "-X ${PACKAGE_PATH}/cmd.Version=${VERSION} -X ${PACKAGE_PATH}/cmd.Revision=${REVISION} -X ${PACKAGE_PATH}/cmd.Name=${NAME}"
+OSARCH			:= "windows/amd64 linux/amd64"
 GITHUB_USER	:= dtamura
 
 ifndef GOBIN
@@ -17,7 +17,7 @@ GHR := $(GOBIN)/ghr
 
 $(LINT): ; @go get github.com/golang/lint/golint
 $(GOX): ; @go get github.com/mitchellh/gox
-$(ARCHIVER): ; @go get github.com/mholt/archiver/cmd/archiver
+$(ARCHIVER): ; @go get -u github.com/mholt/archiver/cmd/arc
 $(GHR): ; @go get github.com/tcnksm/ghr
 
 .DEFAULT_GOAL := build
@@ -42,9 +42,9 @@ cross-build: deps $(GOX)
 .PHONY: package
 package: cross-build $(ARCHIVER)
 	rm -rf ./pkg && mkdir ./pkg && \
-	pushd out && \
-	find * -type d -exec archiver make ../pkg/{}.tar.gz {}/$(NAME) \; && \
-	popd
+	cd out && \
+	find * -type d -exec arc archive ../pkg/{}.tar.gz {} \; && \
+	cd ..
 
 .PHONY: release
 release: $(GHR)
