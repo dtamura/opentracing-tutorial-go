@@ -15,10 +15,15 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+)
+
+var (
+	logger *zap.Logger
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -40,12 +45,14 @@ to quickly create a Cobra application.`,
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		logger.Fatal("Error", zap.Error(err))
 		os.Exit(1)
 	}
 }
 
 func init() {
+	logger, _ = zap.NewDevelopment(zap.AddStacktrace(zapcore.FatalLevel))
+
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.

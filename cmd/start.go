@@ -15,9 +15,14 @@
 package cmd
 
 import (
+	"github.com/dtamura/hello-cobra/lib/log"
+	"github.com/dtamura/hello-cobra/lib/tracing"
 	"github.com/dtamura/hello-cobra/services/sandbox"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
+
+var options = &sandbox.ConfigOptions{}
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -25,7 +30,17 @@ var startCmd = &cobra.Command{
 	Short: "start",
 	Long:  "start",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := sandbox.RunE()
+		zapLogger := logger.With(zap.String("service", "sandbox"))
+		logger := log.NewFactory(zapLogger)
+		tracer, closer := tracing.Init("hello-world", logger)
+		server := sandbox.NewServer(
+			options,
+			tracer,
+			logger,
+			closer,
+		)
+		defer closer.Close()
+		err := server.RunE()
 		return err
 	},
 }
@@ -42,4 +57,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	startCmd.PersistentFlags().StringVarP(&options.Message, "message", "m", "tamura", "Message")
+
 }

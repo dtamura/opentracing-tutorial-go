@@ -1,10 +1,43 @@
 package sandbox
 
-import "fmt"
+import (
+	"io"
+
+	"github.com/dtamura/hello-cobra/lib/log"
+	opentracing "github.com/opentracing/opentracing-go"
+	spanLog "github.com/opentracing/opentracing-go/log"
+	"go.uber.org/zap"
+)
+
+// Server
+type Server struct {
+	tracer opentracing.Tracer
+	logger log.Factory
+	closer io.Closer
+}
+
+// ConfigOptions オプション
+type ConfigOptions struct {
+	Message string
+}
+
+var options = &ConfigOptions{}
+
+// NewServer creates a new frontend.Server
+func NewServer(o *ConfigOptions, tracer opentracing.Tracer, logger log.Factory, closer io.Closer) *Server {
+	options = o
+	return &Server{
+		tracer: tracer,
+		logger: logger,
+		closer: closer,
+	}
+}
 
 // RunE start service
-func RunE() error {
-	fmt.Println("Sandbox Start")
+func (s *Server) RunE() error {
+	s.logger.Bg().Info("Sandbox Start")
+	s.logger.Bg().Info("message", zap.String("message", options.Message))
+
 
 	return nil
 }
