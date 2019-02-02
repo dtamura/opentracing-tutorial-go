@@ -1,4 +1,4 @@
-NAME				:= hello-cobra
+NAME			:= hello-cobra
 VERSION			:= v0.0.1
 REVISION		:= $(shell git rev-parse --short HEAD)
 PACKAGE_PATH	:= github.com/dtamura/${NAME}
