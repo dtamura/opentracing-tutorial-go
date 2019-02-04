@@ -1,4 +1,4 @@
-NAME			:= hello-cobra
+NAME			:= opentracing-tutorial-go
 VERSION			:= v0.0.1
 REVISION		:= $(shell git rev-parse --short HEAD)
 PACKAGE_PATH	:= github.com/dtamura/${NAME}
@@ -19,6 +19,7 @@ $(LINT): ; @go get github.com/golang/lint/golint
 $(GOX): ; @go get github.com/mitchellh/gox
 $(ARCHIVER): ; @go get -u github.com/mholt/archiver/cmd/arc
 $(GHR): ; @go get github.com/tcnksm/ghr
+$(GODOC): ; @go get golang.org/x/tools/cmd/godoc
 
 .DEFAULT_GOAL := build
 

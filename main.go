@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/dtamura/hello-cobra/cmd"
+import "github.com/dtamura/opentracing-tutorial-go/cmd"
 
 func main() {
 	cmd.Execute()

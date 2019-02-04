@@ -1,16 +1,16 @@
-package sandbox
+package lesson01
 
 import (
 	"io"
 
-	"github.com/dtamura/hello-cobra/lib/log"
+	"github.com/dtamura/opentracing-tutorial-go/lib/log"
 	opentracing "github.com/opentracing/opentracing-go"
 	spanLog "github.com/opentracing/opentracing-go/log"
 	"go.uber.org/zap"
 )
 
-// Server
-type Server struct {
+// Client 構造体
+type Client struct {
 	tracer opentracing.Tracer
 	logger log.Factory
 	closer io.Closer
@@ -23,22 +23,22 @@ type ConfigOptions struct {
 
 var options = &ConfigOptions{}
 
-// NewServer creates a new frontend.Server
-func NewServer(o *ConfigOptions, tracer opentracing.Tracer, logger log.Factory, closer io.Closer) *Server {
+// NewClient Client構造体を作成する
+func NewClient(o *ConfigOptions, tracer opentracing.Tracer, logger log.Factory, closer io.Closer) *Client {
 	options = o
-	return &Server{
+	return &Client{
 		tracer: tracer,
 		logger: logger,
 		closer: closer,
 	}
 }
 
-// RunE start service
-func (s *Server) RunE() error {
-	s.logger.Bg().Info("Sandbox Start")
-	s.logger.Bg().Info("message", zap.String("message", options.Message))
+// RunE プログラム開始。エラーを返す
+func (c *Client) RunE() error {
+	c.logger.Bg().Info("Sandbox Start")
+	c.logger.Bg().Info("message", zap.String("message", options.Message))
 
-	span := s.tracer.StartSpan("say-hello")
+	span := c.tracer.StartSpan("say-hello")
 	span.SetTag("hello-to", options.Message)
 
 	span.LogFields(

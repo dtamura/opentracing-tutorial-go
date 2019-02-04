@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/dtamura/hello-cobra/lib/log"
+	"github.com/dtamura/opentracing-tutorial-go/lib/log"
 
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go/config"

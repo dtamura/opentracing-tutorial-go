@@ -7,5 +7,5 @@ Sandbox
 ```cmd
 make
 export JAEGER_AGENT_HOST=<HOST>
-bin/hello-cobra start 
+bin/opentracing-tutorial lesson01 -m hoge
 ```
