@@ -6,7 +6,6 @@ import (
 	"github.com/dtamura/opentracing-tutorial-go/lib/log"
 	opentracing "github.com/opentracing/opentracing-go"
 	spanLog "github.com/opentracing/opentracing-go/log"
-	"go.uber.org/zap"
 )
 
 // Client 構造体
@@ -35,16 +34,18 @@ func NewClient(o *ConfigOptions, tracer opentracing.Tracer, logger log.Factory, 
 
 // RunE プログラム開始。エラーを返す
 func (c *Client) RunE() error {
-	c.logger.Bg().Info("Sandbox Start")
-	c.logger.Bg().Info("message", zap.String("message", options.Message))
+	c.logger.Bg().Info("Lesson01 Start")
 
-	span := c.tracer.StartSpan("say-hello")
-	span.SetTag("hello-to", options.Message)
+	span := c.tracer.StartSpan("say-hello") // "say-hello" という名称のSpanを生成
+	helloStr := options.Message
+	span.SetTag("hello-to", helloStr) // Tagに"hello-to"をセット
 
 	span.LogFields(
-		spanLog.String("event", "hoge"),
+		spanLog.String("event", "string-format"),
+		spanLog.String("value", helloStr),
 	)
 
+	println(helloStr)
 	span.LogKV("event", "println")
 
 	span.Finish()

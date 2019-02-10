@@ -19,7 +19,7 @@ var lesson01Cmd = &cobra.Command{
 
 		zapLogger := logger.With(zap.String("service", "lesson01"))
 		logger := log.NewFactory(zapLogger)
-		tracer, closer := tracing.Init("lesson01", logger)
+		tracer, closer := tracing.Init("lesson01", logger) // lesson01というサービス名のtracerを生成
 		client := lesson01.NewClient(
 			lesson01Options,
 			tracer,
@@ -44,5 +44,6 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// lesson01Cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	lesson01Cmd.PersistentFlags().StringVarP(&lesson01Options.Message, "message", "m", "tamura", "Message")
+	lesson01Cmd.PersistentFlags().StringVarP(&lesson01Options.Message, "message", "m", "tamura", "Message") // -mオプションで文字列を取得する
+
 }
