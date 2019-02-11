@@ -41,3 +41,9 @@ lesson02の各関数をHTTPリクエストに変更した
 
 Injectを使用することにより、RequestHeaderに Uber-Trace-Idが付与される
 
+
+Lesson04 Baggage
+-----------------------------
+
+- 分散したコンテキストの伝播を理解する
+- baggage
