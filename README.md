@@ -38,3 +38,6 @@ Lesson03 Tracing RPC Requests
 
 
 lesson02の各関数をHTTPリクエストに変更した
+
+Injectを使用することにより、RequestHeaderに Uber-Trace-Idが付与される
+
