@@ -8,6 +8,7 @@ import (
 
 	"github.com/dtamura/opentracing-tutorial-go/lib/log"
 	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"go.uber.org/zap"
 )
 
@@ -46,9 +47,16 @@ func (s *Server) createServerMux() http.Handler {
 }
 
 func (s *Server) formatString(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	span, ctx := opentracing.StartSpanFromContext(ctx, "formatString")
+	// ctx := r.Context()
+	// span, ctx := opentracing.StartSpanFromContext(ctx, "formatString")
+
+	// Extract
+	// use a special option RPCServerOption that creates a ChildOf reference to the passed spanCtx
+	// as well as sets a span.kind=server tag on the new span.
+	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
+	span := s.tracer.StartSpan("format", ext.RPCServerOption(spanCtx))
 	defer span.Finish()
+
 	helloTo := r.FormValue("helloTo")
 	helloStr := fmt.Sprintf("Hello, %s!", helloTo)
 	w.Write([]byte(helloStr))
