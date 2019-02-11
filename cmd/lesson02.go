@@ -26,7 +26,6 @@ var lesson02Cmd = &cobra.Command{
 			lesson02Options,
 			tracer,
 			logger,
-			closer,
 		)
 		defer closer.Close()
 		err := client.RunE()

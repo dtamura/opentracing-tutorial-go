@@ -3,7 +3,6 @@ package lesson02
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/dtamura/opentracing-tutorial-go/lib/log"
 	opentracing "github.com/opentracing/opentracing-go"
@@ -14,7 +13,6 @@ import (
 type Client struct {
 	tracer opentracing.Tracer
 	logger log.Factory
-	closer io.Closer
 }
 
 // ConfigOptions オプション
@@ -25,12 +23,11 @@ type ConfigOptions struct {
 var options = &ConfigOptions{}
 
 // NewClient Client構造体を作成する
-func NewClient(o *ConfigOptions, tracer opentracing.Tracer, logger log.Factory, closer io.Closer) *Client {
+func NewClient(o *ConfigOptions, tracer opentracing.Tracer, logger log.Factory) *Client {
 	options = o
 	return &Client{
 		tracer: tracer,
 		logger: logger,
-		closer: closer,
 	}
 }
 
