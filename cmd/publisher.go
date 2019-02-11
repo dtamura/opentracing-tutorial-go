@@ -28,7 +28,7 @@ var publisherCmd = &cobra.Command{
 	Use:   "publisher",
 	Short: "start publisher service",
 	Long:  "start publisher service",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 
 		zapLogger := logger.With(zap.String("service", "publisher"))
 		logger := log.NewFactory(zapLogger)
@@ -42,7 +42,7 @@ var publisherCmd = &cobra.Command{
 			logger,
 		)
 
-		return publisher.RunE()
+		publisher.RunE()
 	},
 }
 

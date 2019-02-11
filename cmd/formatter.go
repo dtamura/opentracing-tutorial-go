@@ -30,20 +30,19 @@ var formatterCmd = &cobra.Command{
 	Use:   "formatter",
 	Short: "Start formatter Service",
 	Long:  "Start formatter service",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		zapLogger := logger.With(zap.String("service", "lesson03"))
+	Run: func(cmd *cobra.Command, args []string) {
+		zapLogger := logger.With(zap.String("service", "formatter"))
 		logger := log.NewFactory(zapLogger)
 		tracer, closer := tracing.Init("formatter", logger) // lesson03というサービス名のtracerを生成
 		defer closer.Close()
 		opentracing.SetGlobalTracer(tracer) // to start the new spans, so we need to initialize that global variable to our instance of Jaeger tracer
 
-		formatterOptions.Port = 8081
 		formatter := formatter.NewServer(
 			formatterOptions,
 			tracer,
 			logger,
 		)
-		return formatter.RunE()
+		formatter.RunE()
 	},
 }
 
@@ -59,4 +58,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// formatterCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	formatterOptions.Port = 8081
 }

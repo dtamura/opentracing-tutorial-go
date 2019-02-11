@@ -16,7 +16,7 @@ var lesson02Cmd = &cobra.Command{
 	Use:   "lesson02",
 	Short: "start lesson02 program",
 	Long:  "Start lesson02 Program",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 
 		zapLogger := logger.With(zap.String("service", "lesson02"))
 		logger := log.NewFactory(zapLogger)
@@ -28,8 +28,7 @@ var lesson02Cmd = &cobra.Command{
 			logger,
 		)
 		defer closer.Close()
-		err := client.RunE()
-		return err
+		client.RunE()
 	},
 }
 
