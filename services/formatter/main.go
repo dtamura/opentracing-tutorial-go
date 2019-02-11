@@ -46,6 +46,9 @@ func (s *Server) createServerMux() http.Handler {
 }
 
 func (s *Server) formatString(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	span, ctx := opentracing.StartSpanFromContext(ctx, "formatString")
+	defer span.Finish()
 	helloTo := r.FormValue("helloTo")
 	helloStr := fmt.Sprintf("Hello, %s!", helloTo)
 	w.Write([]byte(helloStr))
