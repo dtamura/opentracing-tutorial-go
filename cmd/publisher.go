@@ -32,7 +32,7 @@ var publisherCmd = &cobra.Command{
 
 		zapLogger := logger.With(zap.String("service", "publisher"))
 		logger := log.NewFactory(zapLogger)
-		tracer, closer := tracing.Init("formatter", logger) // lesson03というサービス名のtracerを生成
+		tracer, closer := tracing.Init("publisher", logger) // publisherというサービス名のtracerを生成
 		defer closer.Close()
 		opentracing.SetGlobalTracer(tracer) // to start the new spans, so we need to initialize that global variable to our instance of Jaeger tracer
 
