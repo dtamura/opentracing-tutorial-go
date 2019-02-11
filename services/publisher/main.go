@@ -48,6 +48,7 @@ func (s *Server) createServerMux() http.Handler {
 func (s *Server) publish(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	span, ctx := opentracing.StartSpanFromContext(ctx, "publisher")
+	defer span.Finish()
 	helloStr := r.FormValue("helloStr")
 	fmt.Println(helloStr)
 }
