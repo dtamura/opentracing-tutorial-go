@@ -20,10 +20,10 @@ type ConfigOptions struct {
 	Message string
 }
 
-var options = &ConfigOptions{}
+var options ConfigOptions
 
 // NewClient Client構造体を作成する
-func NewClient(o *ConfigOptions, tracer opentracing.Tracer, logger log.Factory) *Client {
+func NewClient(o ConfigOptions, tracer opentracing.Tracer, logger log.Factory) *Client {
 	options = o
 	return &Client{
 		tracer: tracer,
@@ -32,7 +32,7 @@ func NewClient(o *ConfigOptions, tracer opentracing.Tracer, logger log.Factory) 
 }
 
 // RunE プログラム開始。エラーを返す
-func (c *Client) RunE() error {
+func (c *Client) Run() {
 	c.logger.Bg().Info("Lesson01 Start")
 
 	span := c.tracer.StartSpan("say-hello") // "say-hello" という名称のSpanを生成
@@ -48,5 +48,4 @@ func (c *Client) RunE() error {
 	span.LogKV("event", "println")
 
 	span.Finish()
-	return nil
 }

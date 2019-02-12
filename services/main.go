@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/dtamura/opentracing-tutorial-go/cmd"
+import "github.com/dtamura/opentracing-tutorial-go/services/cmd"
 
 func main() {
 	cmd.Execute()

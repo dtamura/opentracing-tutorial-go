@@ -17,46 +17,53 @@ package cmd
 import (
 	"github.com/dtamura/opentracing-tutorial-go/lib/log"
 	"github.com/dtamura/opentracing-tutorial-go/lib/tracing"
-	"github.com/dtamura/opentracing-tutorial-go/services/formatter"
+	"github.com/dtamura/opentracing-tutorial-go/services/publisher"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )
 
-var formatterOptions formatter.ConfigOptions
-
-// formatterCmd represents the formatter command
-var formatterCmd = &cobra.Command{
-	Use:   "formatter",
-	Short: "Start formatter Service",
-	Long:  "Start formatter service",
+// publisherCmd represents the publisher command
+var publisherCmd = &cobra.Command{
+	Use:   "publisher",
+	Short: "start publisher service",
+	Long:  "start publisher service",
 	Run: func(cmd *cobra.Command, args []string) {
-		zapLogger := logger.With(zap.String("service", "formatter"))
-		logger := log.NewFactory(zapLogger)
-		tracer, closer := tracing.Init("formatter", logger) // lesson03というサービス名のtracerを生成
-		defer closer.Close()
-		opentracing.SetGlobalTracer(tracer) // to start the new spans, so we need to initialize that global variable to our instance of Jaeger tracer
 
-		formatter := formatter.NewServer(
-			formatterOptions,
+		// loggerの初期化
+		zapLogger := logger.With(zap.String("service", "publisher"))
+		logger := log.NewFactory(zapLogger)
+
+		// OpenTracingの初期化
+		tracer, closer := tracing.Init("publisher", logger)
+		defer closer.Close()
+		opentracing.SetGlobalTracer(tracer) // Jaeger tracer のグローバル変数を初期化
+
+		publisher := publisher.NewServer(
+			publisherOptions,
 			tracer,
 			logger,
 		)
-		formatter.RunE()
+
+		if err := publisher.RunE(); err != nil {
+			logger.Bg().Error("Server Error", zap.Error(err))
+		}
 	},
 }
 
+var publisherOptions publisher.ConfigOptions
+
 func init() {
-	rootCmd.AddCommand(formatterCmd)
+	rootCmd.AddCommand(publisherCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// formatterCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// publisherCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// formatterCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	formatterOptions.Port = 8081
+	// publisherCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	publisherOptions.Port = 8082
 }

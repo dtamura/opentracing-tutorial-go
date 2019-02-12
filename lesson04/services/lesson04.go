@@ -2,9 +2,7 @@ package lesson04
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -20,7 +18,6 @@ import (
 type Client struct {
 	tracer opentracing.Tracer
 	logger log.Factory
-	closer io.Closer
 }
 
 // ConfigOptions オプション
@@ -29,21 +26,20 @@ type ConfigOptions struct {
 	Greeting string
 }
 
-var options = &ConfigOptions{}
+var options ConfigOptions
 
 // NewClient Client構造体を作成する
-func NewClient(o *ConfigOptions, tracer opentracing.Tracer, logger log.Factory, closer io.Closer) *Client {
+func NewClient(o ConfigOptions, tracer opentracing.Tracer, logger log.Factory) *Client {
 	options = o
 	return &Client{
 		tracer: tracer,
 		logger: logger,
-		closer: closer,
 	}
 }
 
-// RunE プログラム開始。エラーを返す
-func (c *Client) RunE() error {
-	c.logger.Bg().Info("Lesson03 Start")
+// Run プログラム開始
+func (c *Client) Run() {
+	c.logger.Bg().Info("lesson04 Start")
 
 	span := c.tracer.StartSpan("say-hello")
 	span.SetBaggageItem("greeting", options.Greeting) // Baggageで文字列を送信
@@ -57,14 +53,13 @@ func (c *Client) RunE() error {
 	str, err := formatString(ctx, helloStr)
 	if err != nil {
 		c.logger.Bg().Error("Error while formatString", zap.Error(err))
-		return errors.New("hoge")
+		return
 	}
 
 	err = printHello(ctx, str)
 	if err != nil {
 		c.logger.Bg().Error("Error while PrintString", zap.Error(err))
 	}
-	return nil
 }
 
 func formatString(ctx context.Context, helloTo string) (string, error) {
