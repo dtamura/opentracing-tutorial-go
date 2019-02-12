@@ -47,17 +47,24 @@ func (s *Server) createServerMux() http.Handler {
 }
 
 func (s *Server) formatString(w http.ResponseWriter, r *http.Request) {
+
+	// Lesson02ではこのようにContextからSpanを生成していた
 	// ctx := r.Context()
 	// span, ctx := opentracing.StartSpanFromContext(ctx, "formatString")
 
-	// Extract
-	// use a special option RPCServerOption that creates a ChildOf reference to the passed spanCtx
-	// as well as sets a span.kind=server tag on the new span.
+	// Lesson03 Extract
+	// 伝播されてきたSpanから子のSpanを作成し、その作成したSpanに span.kind=server というタグをセットする
 	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
 	span := s.tracer.StartSpan("format", ext.RPCServerOption(spanCtx))
 	defer span.Finish()
 
+	// Lesson04 Baggageからデータを取り出す
+	greeting := span.BaggageItem("greeting")
+	if greeting == "" {
+		greeting = "Hello"
+	}
+
 	helloTo := r.FormValue("helloTo")
-	helloStr := fmt.Sprintf("Hello, %s!", helloTo)
+	helloStr := fmt.Sprintf("%s, %s!", greeting, helloTo)
 	w.Write([]byte(helloStr))
 }

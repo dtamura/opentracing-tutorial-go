@@ -47,12 +47,12 @@ func (s *Server) createServerMux() http.Handler {
 }
 
 func (s *Server) publish(w http.ResponseWriter, r *http.Request) {
+	// Lesson02ではこのようにContextからSpanを生成していた
 	// ctx := r.Context()
 	// span, ctx := opentracing.StartSpanFromContext(ctx, "publisher")
 
-	// Extract
-	// use a special option RPCServerOption that creates a ChildOf reference to the passed spanCtx
-	// as well as sets a span.kind=server tag on the new span.
+	// Lesson03 Extract
+	// 伝播されてきたSpanから子のSpanを作成し、作成したSpanに span.kind=server というタグをセットする
 	spanCtx, _ := s.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
 	span := s.tracer.StartSpan("publish", ext.RPCServerOption(spanCtx))
 	defer span.Finish()
